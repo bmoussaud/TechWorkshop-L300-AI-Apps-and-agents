@@ -9,10 +9,9 @@ from agent_initializer import initialize_agent
 
 load_dotenv()
 
-CL_PROMPT_TARGET = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'prompts', 'CustomerLoyaltyAgentPrompt.txt')
-with open(CL_PROMPT_TARGET, 'r', encoding='utf-8') as file:
-    CL_PROMPT = file.read()
-
+CART_PROMPT_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'prompts', 'CartManagerPrompt.txt')
+with open(CART_PROMPT_PATH, 'r', encoding='utf-8') as file:
+    CART_MANAGER_PROMPT = file.read()
 
 project_endpoint = os.environ["FOUNDRY_ENDPOINT"]
 
@@ -21,15 +20,14 @@ project_client = AIProjectClient(
     credential=DefaultAzureCredential(),
 )
 
-# Define the set of user-defined callable functions to use as tools (from MCP client)
-functions = create_function_tool_for_agent("customer_loyalty")
+# Create function tools for cart_manager agent
+functions = create_function_tool_for_agent("cart_manager")
 
 initialize_agent(
     project_client=project_client,
     model=os.environ["gpt_deployment"],
-    name="customer-loyalty",
-    description="Zava Customer Loyalty Agent",
-    instructions=CL_PROMPT,
+    name="cart-manager",
+    description="Zava Cart Manager Agent",
+    instructions=CART_MANAGER_PROMPT,
     tools=functions
 )
-
